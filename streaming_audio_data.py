@@ -11,6 +11,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib.gridspec import GridSpec
 import sounddevice as sd
 import librosa
 import librosa.display
@@ -196,9 +197,19 @@ def main():
 
     analyzer = AudioAnalyzer()
 
-    # Figure 설정
-    fig, axes = plt.subplots(6, 1, figsize=(14, 18))
+    # Figure 설정 - GridSpec으로 colorbar 공간 확보
+    fig = plt.figure(figsize=(14, 18))
     fig.suptitle('Real-time Audio Analysis', fontsize=14, fontweight='bold')
+
+    # GridSpec: 6행 x 2열 (두 번째 열은 colorbar용, 폭 비율 30:1)
+    gs = GridSpec(6, 2, figure=fig, width_ratios=[30, 1], hspace=0.7, wspace=0.05)
+
+    # 1~5번 그래프는 첫 번째 열 전체 사용
+    axes = [fig.add_subplot(gs[i, 0]) for i in range(5)]
+    # 6번 멜 스펙트로그램
+    axes.append(fig.add_subplot(gs[5, 0]))
+    # colorbar용 축
+    cax = fig.add_subplot(gs[5, 1])
 
     # 시간 축 생성
     time_axis = np.linspace(0, BUFFER_SECONDS, BUFFER_SIZE)
@@ -266,10 +277,8 @@ def main():
     axes[5].set_xlabel('Time (s)')
     axes[5].set_ylabel('Frequency (Hz)')
     axes[5].set_title('6. Mel Spectrogram')
-    fig.colorbar(mel_img, ax=axes[5], label='dB')
-
-    plt.subplots_adjust(hspace=0.7)
-
+    fig.colorbar(mel_img, cax=cax, label='dB')
+    
     def update(frame):
         """애니메이션 업데이트 함수"""
         signal = analyzer.get_audio_data()
