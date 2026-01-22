@@ -211,7 +211,6 @@ def main():
     axes[0].set_xlim([0, BUFFER_SECONDS])
     axes[0].set_ylim([-1, 1])
     axes[0].grid(True, alpha=0.3)
-    axes[0].tick_params(labelbottom=False)
 
     # RMS 시간 축 (초기값)
     rms_frames = int(BUFFER_SIZE / HOP_LENGTH) + 1
@@ -225,7 +224,6 @@ def main():
     axes[1].set_xlim([0, BUFFER_SECONDS])
     axes[1].set_ylim([0, 0.5])
     axes[1].grid(True, alpha=0.3)
-    axes[1].tick_params(labelbottom=False)
 
     # 3. 음압 (Sound Pressure) - 정규화된 신호 절대값
     line_pressure, = axes[2].plot(time_axis, np.zeros(BUFFER_SIZE),
@@ -235,7 +233,6 @@ def main():
     axes[2].set_xlim([0, BUFFER_SECONDS])
     axes[2].set_ylim([0, 1])
     axes[2].grid(True, alpha=0.3)
-    axes[2].tick_params(labelbottom=False)
 
     # 4. 강도 (Intensity) - RMS^2
     line_intensity, = axes[3].plot(rms_time, np.zeros(rms_frames),
@@ -245,7 +242,6 @@ def main():
     axes[3].set_xlim([0, BUFFER_SECONDS])
     axes[3].set_ylim([0, 0.1])
     axes[3].grid(True, alpha=0.3)
-    axes[3].tick_params(labelbottom=False)
 
     # 5. dB (Decibels)
     line_db, = axes[4].plot(rms_time, np.full(rms_frames, -80),
@@ -255,7 +251,6 @@ def main():
     axes[4].set_xlim([0, BUFFER_SECONDS])
     axes[4].set_ylim([-80, 0])
     axes[4].grid(True, alpha=0.3)
-    axes[4].tick_params(labelbottom=False)
 
     # 6. 멜 스펙트로그램
     mel_data = np.zeros((N_MELS, MEL_HISTORY_FRAMES))
@@ -273,7 +268,7 @@ def main():
     axes[5].set_title('6. Mel Spectrogram')
     fig.colorbar(mel_img, ax=axes[5], label='dB')
 
-    plt.tight_layout()
+    plt.subplots_adjust(hspace=0.7)
 
     def update(frame):
         """애니메이션 업데이트 함수"""
