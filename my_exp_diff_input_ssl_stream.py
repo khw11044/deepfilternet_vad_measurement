@@ -10,16 +10,20 @@ nfft = 256  # FFT size
 freq_range = [300, 3500]
 chunk_frames = 20  # 청크당 STFT 프레임 수
 
+
+# dB 임계값 설정 (이 값 이상의 소리만 감지)
+db_threshold = -10  # dB
+
 # Location of sources
 azimuth = np.array([61, 180]) / 180. * np.pi
 distance = 2.  # meters
 
 fs1, signal1 = wavfile.read("/home/khw/workspace/Audio/모닥불.wav")
-fs2, signal2 = wavfile.read("/home/khw/workspace/Audio/벨소리.wav")
+fs2, signal2 = wavfile.read("/home/khw/workspace/Audio/arctic_a0010.wav")
 
 signals = [signal1, signal2]
 
-snr_db = 5.    # signal-to-noise ratio
+snr_db = 5.    # signal-to-noise ratiob
 sigma2 = 10**(-snr_db / 10) / (4. * np.pi * distance)**2
 
 # 방 생성
@@ -50,8 +54,6 @@ low_freq_cutoff = 1000
 low_freq_mask = freq_bins < high_freq_cutoff
 high_freq_mask = freq_bins > low_freq_cutoff
 
-# dB 임계값 설정 (이 값 이상의 소리만 감지)
-db_threshold = -20  # dB
 
 # DOA 알고리즘 초기화
 algo_names = ['SRP', 'MUSIC', 'TOPS']
@@ -101,7 +103,7 @@ row_labels = [
     f'Full Band ({freq_range[0]}-{freq_range[1]}Hz)',
     f'High Freq (>{high_freq_cutoff}Hz)',
     f'Low Freq (<{low_freq_cutoff}Hz)',
-    f'Loud Sound (>{db_threshold}dB)',
+    f'Loud (>{db_threshold}dB)',
 ]
 for row_idx in range(4):
     axes[row_idx, 0].set_ylabel(row_labels[row_idx], fontsize=11, labelpad=30)
@@ -152,7 +154,7 @@ def update(frame_idx):
             c_dirty_img = np.r_[resp, resp[0]]
             lines[(row_idx, col_idx)].set_ydata(base + height * c_dirty_img)
 
-    # 시간 업데이트 (현재 dB 표시 추가)
+    # 시간 업데이트 (현재 dB 표시)
     current_time = start_frame * (nfft // 2) / fs
     current_db = np.max(frame_db) if len(frame_db) > 0 else -100
     time_text.set_text(f'Time: {current_time:.2f}s | Max dB: {current_db:.1f}')
