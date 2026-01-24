@@ -15,8 +15,8 @@ chunk_frames = 20  # 청크당 STFT 프레임 수
 azimuth = np.array([61, 180]) / 180. * np.pi
 distance = 2.  # meters
 
-fs1, signal1 = wavfile.read("/home/khw/workspace/Audio/모닥불.wav")
-fs2, signal2 = wavfile.read("/home/khw/workspace/Audio/arctic_a0010.wav")
+fs1, signal1 = wavfile.read("/home/khw/workspace/Audio/arctic_a0010.wav")
+fs2, signal2 = wavfile.read("/home/khw/workspace/Audio/exercise_bike.wav")
 
 signals = [signal1, signal2]
 
